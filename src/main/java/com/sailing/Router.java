@@ -13,15 +13,18 @@ public class Router {
     public static void main(String[] args) throws Exception {
         if (args.length < 1){
             printUsage();
-
             System.exit(0);
-        }else if (args.length == 1){
-
         }else {
             String router = args[0];
             switch (router){
+                case "hessianTest":
+                    HessianTest.run();
+                    break;
+                case "udpClient":
+                    new SimpleClient().run();
+                    break;
                 case "simpleServer":
-                    new SimpleServer(new SysProperties(args[1]));
+                    new SimpleServer(9988);
                     break;
                 case "ssh" :
                     SshExecuter.run(args);
@@ -33,13 +36,17 @@ public class Router {
                     }
                     AVTransmit2.main(new String[]{args[1],args[2],args[3]});
                     break;
+                    /*
+                     SIPControl-allow    1     34020000005213200001 172.20.52.150 5060
+                     */
                 case "SIPControl-allow":
-                    if (args.length != 7) {
+                    if (args.length != 4) {
                         printUsage();
                         System.exit(0);
                     }
                     for (int i = 0; i < Integer.parseInt(args[1]); i++) {
-                        SIPControl.NotAllow(args[2],args[3],args[4],args[5],args[6]);
+                        SIPControl.NotAllow("34020000005213200001",args[2],args[3],"172.20.54.131","34020000005213200002");
+                        Thread.sleep(1000);
                     }
                     break;
 

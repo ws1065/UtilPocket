@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration  scan="true" scanPeriod="60 seconds">
     <property name="LOG_HOME" value="/opt/vscg/engine/logs" />
-    <define name="LOG_SERVICE" class="com.sailing.common.LogbackIdConfig" />
 
     <!-- Simple file output -->
 <!--    <appender name="FILE"-->

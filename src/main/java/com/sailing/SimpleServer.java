@@ -1,9 +1,8 @@
 package com.sailing;
 
-import lombok.Data;
-
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketException;
 
 /**
  * @program: demo
@@ -11,27 +10,15 @@ import java.net.DatagramSocket;
  * @author: wangsw
  * @create: 2020-10-27 16:25
  */
-@Data
 public class SimpleServer extends Thread {
     public static DatagramSocket sock;
-    private SysProperties sysProperties;
+    private int listenPort;
 
-    public SimpleServer(SysProperties sysProperties) {
-        this.sysProperties =sysProperties;
+    public SimpleServer(int listenPort) {
+        this.listenPort = listenPort;
+        new Thread(this).start();
+    }
 
-        initPortMonitor();
-        this.setDaemon(true);
-        new Thread(()->{
-            while (true);
-        }).start();
-        this.start();
-    }
-    public  DatagramSocket getSock() {
-        if (sock == null) {
-            initPortMonitor();
-        }
-        return sock;
-    }
     @Override
     public void run() {
         while (true) {
@@ -39,25 +26,23 @@ public class SimpleServer extends Thread {
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             try {
                 getSock().receive(packet);
+                System.out.println();
             } catch (Exception e) {
             }
         }
     }
-    private  void initPortMonitor() {
-        String selfIPAndPortToLanStr = sysProperties.getSelfIpAndPortToLan();
-        String selfIPAndPortToWanStr = sysProperties.getSelfIpAndPortToWan();
-        String[] selfIPAndPortToWan = selfIPAndPortToWanStr.split(":");
-        String[] selfIPAndPortToLan = selfIPAndPortToLanStr.split(":");
-        String myHostIPToLan = selfIPAndPortToLan[0];
-        String myHostIPToWan = selfIPAndPortToWan[0];
-        int myPort = Integer.parseInt(selfIPAndPortToLan[1]);
-        //增加多一个端口用于给上级发送消息的本地端口
-        try {
-            sock = new DatagramSocket(myPort);
-        } catch (Exception e) {
 
+    private  DatagramSocket getSock() {
+        if (sock == null) {
+            initPortMonitor(listenPort);
+        }
+        return sock;
+    }
+    private  void initPortMonitor(int listenPort) {
+        try {
+            sock = new DatagramSocket(listenPort);
+        } catch (SocketException e) {
+            e.printStackTrace();
         }
     }
-    //----------业务参数-start-------------------
-
 }

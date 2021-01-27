@@ -1,5 +1,10 @@
 package com.sailing;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+
 /**
  * @program: demo
  * @description:
@@ -34,7 +39,77 @@ public class Zimo {
                       "00000001110000000\n" +
                       "00000000100000000\n" +
                       "00000000000000000\n";
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        List[] graph = new ArrayList[numCourses];
+        int[] indegree = new int[numCourses];
+
+        for (int i = 0; i < numCourses; ++i) {
+            graph[i] = new ArrayList<Integer>();
+        }
+
+        // create graph;
+        for (int[] edges : prerequisites) {
+            graph[edges[1]].add(edges[0]);
+            indegree[edges[0]]++;
+        }
+
+        int[] order = new int[numCourses];
+        Queue queue = new ArrayDeque();
+        int numChoose = 0;
+
+        for (int i = 0; i < numCourses; ++i) {
+            if (indegree[i] == 0) {
+                queue.offer(i);
+                order[numChoose++] = i;
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            int curr = (int)queue.poll(); //queue 中是object
+            // order[numChoose] = curr;
+            // numChoose++;
+
+            for (int i = 0; i < graph[curr].size(); ++i) {
+                int nextChoose = (int)graph[curr].get(i);
+                indegree[nextChoose]--;
+                if (indegree[nextChoose] == 0) {
+                    queue.offer(nextChoose);
+                    order[numChoose++] = nextChoose;
+                }
+            }
+        }
+
+        if (numChoose == numCourses) {
+            return order;
+        }
+
+        return new int[0];
+
+    }
     public static void main(String[] args) {
+        int num = 4;
+        int[][] requite = new int[][] {{1,0},{2,0},{3,1},{3,2}} ;
+        new Zimo().findOrder(num,requite);
+        List<Integer> beforebefore = new ArrayList<>();
+        List<Integer> before = new ArrayList<>();
+        List<Integer> after = new ArrayList<>();
+        List<Integer> afterafter = new ArrayList<>();
+        for (int i = 0; i < requite.length; i++) {
+            if (!before.contains(requite[i][1]) && !after.contains(requite[i][1]))
+                before.add(requite[i][1]);
+            else if (before.contains(requite[i][1])){
+
+            }else if (after.contains(requite[i][1])){
+
+            }
+
+
+            if (!after.contains(requite[i][0]))
+                after.add(requite[i][0]);
+        }
+    }
+
+    private static void 取字模() {
         int x = t1(a1);
         int x1 = t1(a2);
         int x2 = t1(a3);
