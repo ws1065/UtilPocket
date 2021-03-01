@@ -15,9 +15,12 @@ public class SimpleClient {
     private InetSocketAddress address;
     private DatagramSocket datagramSocket;
 
+    public static void main(String[] args) {
+        new SimpleClient().run();
+    }
     public void run() {
         try {
-            address = new InetSocketAddress("127.0.0.1", 9988);
+            address = new InetSocketAddress("127.0.0.1", 5060);
             datagramSocket = new DatagramSocket();
 
             DatagramPacket datagramPacket = null;

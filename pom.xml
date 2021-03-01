@@ -111,13 +111,60 @@
             <artifactId>jmf</artifactId>
             <version>2.1.1e</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>jpcap</groupId>-->
+<!--            <artifactId>jpcap</artifactId>-->
+<!--            <version>1.6.0-b105</version>-->
+<!--        </dependency>-->
     </dependencies>
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/test</outputDirectory>
+                    <!--打包要排除的资源文件、目录（目录要以/结尾）-->
+                    <excludes>
+                        <exclude>logback.xml</exclude>
+                        <exclude>sys.properties</exclude>
+                    </excludes>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>  <!-- 在jar包中增加依赖jar路径说明 -->
+                            <classpathPrefix>jar/</classpathPrefix>
+                            <mainClass>com.sailing.Router</mainClass>
+                        </manifest>
+                        <!-- 用maven在MANIFEST.MF资料中的Class-Path中增加当前目录(.)  -->
+                        <manifestEntries>
+                            <Class-Path>.</Class-Path>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/test/jar</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>

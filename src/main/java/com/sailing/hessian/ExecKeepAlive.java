@@ -1,8 +1,5 @@
-package  com.sailing.heartBeat;
+package com.sailing.hessian;
 
-
-import com.sailing.common.RespData;
-import com.sailing.common.entity.NodeStat;
 
 /**
  * @program: packetresend

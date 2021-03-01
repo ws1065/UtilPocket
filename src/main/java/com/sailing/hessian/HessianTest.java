@@ -1,9 +1,6 @@
-package com.sailing;
+package com.sailing.hessian;
 
 import com.caucho.hessian.client.HessianProxyFactory;
-import com.sailing.common.RespData;
-import com.sailing.common.entity.NodeStat;
-import com.sailing.heartBeat.ExecKeepAlive;
 
 import java.net.MalformedURLException;
 

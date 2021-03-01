@@ -1,4 +1,4 @@
-package com.sailing.common.entity;
+package com.sailing.hessian;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.sailing;
+package com.sailing.sipControl;
 
 /**
  * @program: vscg-platform

@@ -1,5 +1,10 @@
 package com.sailing;
 
+import com.sailing.hessian.HessianTest;
+import com.sailing.sipControl.SIPControl;
+import com.sailing.videoOneWay.OnewayTest;
+
+import javax.jws.Oneway;
 import java.util.Arrays;
 
 /**
@@ -17,6 +22,15 @@ public class Router {
         }else {
             String router = args[0];
             switch (router){
+                case "oneway":
+                    OnewayTest.run(args);
+                    break;
+                case "NetWorkIntercept":
+//                    NetWorkIntercept.run();
+                    break;
+                case "NetWorkUtil":
+//                    NetWorkUtil.run();
+                    break;
                 case "hessianTest":
                     HessianTest.run();
                     break;
@@ -24,7 +38,7 @@ public class Router {
                     new SimpleClient().run();
                     break;
                 case "simpleServer":
-                    new SimpleServer(9988);
+                    new SimpleServer(Integer.valueOf(args[1])).start();
                     break;
                 case "ssh" :
                     SshExecuter.run(args);
