@@ -1,4 +1,4 @@
-package com.sailing;
+package com.sailing.udp;
 
 import lombok.extern.slf4j.Slf4j;
 

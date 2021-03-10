@@ -25,17 +25,17 @@ public class NoticeSgg {
                                     String selfMonitorIp, String selfLinkIp, String selfTargetIp,
                                     String sggMonitorIp, String sggLinkIp, String sggTargetIp, String status, String protocol)  {
         execSelfChannel(requestSgg,requestPort,port,selfMonitorIp,selfLinkIp,selfTargetIp,sggMonitorIp,sggLinkIp,sggTargetIp,status,protocol);
-        execAppendSggChannel(requestSgg,requestPort,port,0,sggMonitorIp,sggLinkIp,sggTargetIp,status,protocol);
+        execAppendSggChannel(requestSgg,requestPort,port,0,sggMonitorIp,sggLinkIp,sggTargetIp,status,protocol,Integer.toString(5*60*1000));
     }
 
 
-    public static void requestData(String requestSgg, int requestPort, int startPort, int endPort, String sggMonitorIp, String sggLinkIp, String sggTargetIp, String status, String protocol) {
-        execAppendSggChannel(requestSgg,requestPort,startPort,endPort,sggMonitorIp,sggLinkIp,sggTargetIp,status,protocol);
+    public static void requestData(String requestSgg, int requestPort, int startPort, int endPort, String sggMonitorIp, String sggLinkIp, String sggTargetIp, String status, String protocol,String timeOut) {
+        execAppendSggChannel(requestSgg,requestPort,startPort,endPort,sggMonitorIp,sggLinkIp,sggTargetIp,status,protocol,timeOut);
 
     }
     private static void execAppendSggChannel(String requestSgg, int requestPort, int startPort, int endPort,
                                              String sggMonitorIp, String sggLinkIp, String sggTargetIp,
-                                             String status, String protocol)  {
+                                             String status, String protocol,String timeOut)  {
         ExternalCommend execCommend = getExecCommend(requestSgg, requestPort);
         for (int i = startPort; i <= endPort ; i++) {
             Passageway passageway = new Passageway();
@@ -62,6 +62,7 @@ public class NoticeSgg {
             passagewayParams.add(passagewayParam);
             passageway.setPassagewayParams(passagewayParams);
             passageway.setState(status);
+            passageway.setTimeOut(Integer.parseInt(timeOut));
 
             RespData<Boolean> result = execCommend.startPassageway(passageway);
             System.out.println("[EXEC　CMD]{"+passageway+"}:{"+result+"}");

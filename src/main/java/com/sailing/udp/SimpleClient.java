@@ -1,4 +1,4 @@
-package com.sailing;
+package com.sailing.udp;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

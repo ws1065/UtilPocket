@@ -2,9 +2,12 @@ package com.sailing;
 
 import com.sailing.hessian.HessianTest;
 import com.sailing.sipControl.SIPControl;
+import com.sailing.tcp.SimpleTcpClient;
+import com.sailing.tcp.SimpleTcpServer;
+import com.sailing.udp.SimpleClient;
+import com.sailing.udp.SimpleServer;
 import com.sailing.videoOneWay.OnewayTest;
 
-import javax.jws.Oneway;
 import java.util.Arrays;
 
 /**
@@ -34,30 +37,28 @@ public class Router {
                 case "hessianTest":
                     HessianTest.run();
                     break;
+                case "tcpClient":
+                    new SimpleTcpClient().run(args[1],args[2]);
+                    break;
+                case "tcpServer":
+                    new SimpleTcpServer().start(args[1],args[2]);
+                    break;
                 case "udpClient":
                     new SimpleClient().run();
                     break;
-                case "simpleServer":
+                case "udpServer":
                     new SimpleServer(Integer.valueOf(args[1])).start();
                     break;
                 case "ssh" :
                     SshExecuter.run(args);
                     break;
                 case "RTPTransmit":
-                    if (args.length != 4) {
-                        printUsage();
-                        System.exit(0);
-                    }
                     AVTransmit2.main(new String[]{args[1],args[2],args[3]});
                     break;
                     /*
                      SIPControl-allow    1     34020000005213200001 172.20.52.150 5060
                      */
                 case "SIPControl-allow":
-                    if (args.length != 4) {
-                        printUsage();
-                        System.exit(0);
-                    }
                     for (int i = 0; i < Integer.parseInt(args[1]); i++) {
                         SIPControl.NotAllow("34020000005213200001",args[2],args[3],"172.20.54.131","34020000005213200002");
                         Thread.sleep(1000);
@@ -66,10 +67,7 @@ public class Router {
 
 
                 case "sgg":
-                    if (!(args.length == 8 || args.length == 9 )) {
-                        printUsage();
-                        System.exit(0);
-                    }
+                    // java -jar sgg(固定字符串)  requestSggIp(网闸的地址) sggMonitorIp(通道的监听IP) sggLinkIp(通道的连接IP) sggTargetIp(通道的目标IP) status[start|stop](启停状态) protocol[tcp|udp](通道的协议) timeout[秒为单位](通道的超时时间) startPort(通道的监听端口起始) endPort(通道的监听端口停止)
                     String requestSgg =args[1];
                     int requestPort= 4399;
                     String sggMonitorIp =args[2];
@@ -77,23 +75,20 @@ public class Router {
                     String sggTargetIp =args[4];
                     String status = args[5];
                     String protocol =args[6];
-                    int startPort = Integer.valueOf(args[7]);
+                    String timeout = args[7];
+                    int startPort = Integer.valueOf(args[8]);
                     int endPort = 0;
-                    if (args.length == 9)
-                        endPort = Integer.valueOf(args[8]);
+                    if (args.length == 10)
+                        endPort = Integer.valueOf(args[9]);
                     else
                         endPort = startPort;
                     if (endPort !=0 && startPort <= endPort)
                         NoticeSgg.requestData(requestSgg,requestPort,startPort,endPort,
-                                sggMonitorIp,sggLinkIp,sggTargetIp,status,protocol);
+                                sggMonitorIp,sggLinkIp,sggTargetIp,status,protocol,timeout);
                     else
                         throw new Exception("输入参数有误："+Arrays.toString(args));
                     break;
                 case "noticesggself":
-                    if (args.length != 11) {
-                        printUsage();
-                        System.exit(0);
-                    }
                     requestSgg =args[1];
                     requestPort= 4399;
                     int port = Integer.valueOf(args[2]);
