@@ -10,12 +10,21 @@ import java.net.MalformedURLException;
  * @author: wangsw
  * @create: 2020-12-25 19:13
  */
-public class HessianTest {
+public class HessianClientTest1 {
 
+    public static void main(String[] args) {
+        run();
+    }
     public static void run(){
-        ExecKeepAlive execCommend = getExecCommend("192.168.56.99:28080");
-        RespData respData = execCommend.keepAlive(new NodeStat());
-        System.out.println(respData);
+        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            int finalI = i;
+            new Thread(()->{
+                System.out.println(finalI);
+                ExecKeepAlive execCommend = getExecCommend("127.0.0.1:80");
+                String respData = execCommend.keepalived(1);
+                System.out.println(finalI +respData);
+            }).start();
+        }
     }
     public static ExecKeepAlive getExecCommend(String ip) {
         if (ip != null && !ip.isEmpty()) {
@@ -26,8 +35,8 @@ public class HessianTest {
                 url = "http://" + ip + ":8080/SailingKeepAliveService";
             }
             HessianProxyFactory factory = new HessianProxyFactory();
-            factory.setReadTimeout(1000);
-            factory.setConnectTimeout(1000);
+            factory.setReadTimeout(40000);
+            factory.setConnectTimeout(40000);
             try {
                 return (ExecKeepAlive) factory.create(ExecKeepAlive.class, url);
             } catch (MalformedURLException e) {

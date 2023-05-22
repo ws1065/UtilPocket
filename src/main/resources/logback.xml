@@ -1,42 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration  scan="true" scanPeriod="60 seconds">
-    <property name="LOG_HOME" value="/opt/vscg/engine/logs" />
-
-    <!-- Simple file output -->
-<!--    <appender name="FILE"-->
-<!--              class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-<!--        &lt;!&ndash; encoder defaults to ch.qos.logback.classic.encoder.PatternLayoutEncoder &ndash;&gt;-->
-<!--        <encoder>-->
-<!--            <pattern>-->
-<!--                [ %-5level] [%date{yyyy-MM-dd HH:mm:ss.SSS}] %logger{96} [%line] [%thread]- %msg%n-->
-<!--            </pattern>-->
-<!--            <charset>UTF-8</charset> &lt;!&ndash; 此处设置字符集 &ndash;&gt;-->
-<!--        </encoder>-->
-
-<!--        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
-<!--            <fileNamePattern>${LOG_HOME}/VSCG_${LOG_SERVICE:-CONFIG_TRACE}_%d{yyyyMMdd}.%i.log</fileNamePattern>-->
-<!--            <maxHistory>10</maxHistory> &lt;!&ndash; 最多存10天，超过滚动（移除旧的添加新的） &ndash;&gt;-->
-<!--            <maxFileSize>100MB</maxFileSize> &lt;!&ndash; 单个文件最大100MB，超过添加新文件 &ndash;&gt;-->
-<!--            <totalSizeCap>1GB</totalSizeCap> &lt;!&ndash; 总文件不超过1GB，，超过滚动（移除旧的添加新的） &ndash;&gt;-->
-<!--        </rollingPolicy>-->
-
-<!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
-<!--            <level>DEBUG</level>-->
-<!--        </filter>-->
-<!--        &lt;!&ndash; Safely log to the same file from multiple JVMs. Degrades performance! &ndash;&gt;-->
-<!--        <prudent>false</prudent>-->
-<!--    </appender>-->
-
-    <!-- Console output -->
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <property name="LOG_HOME" value="/root/logs" />
+    <appender name="FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- encoder defaults to ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+        <encoder>
+            <pattern>
+                [ %-5level] [%date{yyyy-MM-dd HH:mm:ss.SSS}] %logger{96} [%line] [%thread]- %msg%n
+            </pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/DEMO_%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <maxHistory>10</maxHistory> <!-- 最多存10天，超过滚动（移除旧的添加新的） -->
+            <maxFileSize>100MB</maxFileSize> <!-- 单个文件最大100MB，超过添加新文件 -->
+            <totalSizeCap>1GB</totalSizeCap> <!-- 总文件不超过1GB，，超过滚动（移除旧的添加新的） -->
+        </rollingPolicy>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <!-- Safely log to the same file from multiple JVMs. Degrades performance! -->
+        <prudent>false</prudent>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>
                 [ %-5level] [%date{yyyy-MM-dd HH:mm:ss}] %logger{16} [%line] [%thread]- %msg%n
             </pattern>
-            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+            <charset>UTF-8</charset>
         </encoder>
-        <!-- Only log level WARN and above -->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>DEBUG</level>
         </filter>

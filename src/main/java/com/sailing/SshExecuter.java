@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.Properties;
 
 import static java.lang.String.format;
@@ -29,17 +28,22 @@ public class SshExecuter implements Closeable{
     private  ChannelExec channelExec;
 
     public static void run(String[] args) {
-        try {
-            String[] strings = Arrays.copyOfRange(args, 1, args.length );
-            StringBuffer sb = new StringBuffer();
-            for (String string : strings) {
-                sb.append("  "+string+"  ");
+        new Thread(SshExecuter::extracted).start();
+        new Thread(SshExecuter::extracted).start();
+        new Thread(SshExecuter::extracted).start();
+        new Thread(SshExecuter::extracted).start();
+        new Thread(SshExecuter::extracted).start();
+    }
+
+    public static void extracted() {
+        while (true){
+            try {
+                String cmds = "ps -ef|grep VSCG|grep -v grep";
+                String rawDatas = SshExecuter.execSh(cmds);
+                System.out.println(rawDatas);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            String s = SshExecuter.execSh(sb.toString());
-            log.debug(s);
-            System.out.println(s);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -335,11 +339,15 @@ public class SshExecuter implements Closeable{
      * @return
      */
     public static String execSh(String shell) throws Exception{
+        InputStream inputStream = null;
+        InputStreamReader ir = null;
+        LineNumberReader input = null;
         try {
 //            log.info("执行execShL:"+shell);
             Process process = Runtime.getRuntime().exec(new String[] {"/bin/sh","-c",shell},null,null);
-            InputStreamReader ir = new InputStreamReader(process.getInputStream());
-            LineNumberReader input = new LineNumberReader(ir);
+            inputStream = process.getInputStream();
+            ir = new InputStreamReader(inputStream);
+            input = new LineNumberReader(ir);
             String line;
             process.waitFor();
             StringBuffer sb = new StringBuffer();
@@ -351,6 +359,16 @@ public class SshExecuter implements Closeable{
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw e;
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            if (ir != null) {
+                ir.close();
+            }
+            if (input != null) {
+                input.close();
+            }
         }
     }
     /**

@@ -1,9 +1,10 @@
 package com.sailing;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @program: demo
@@ -11,7 +12,18 @@ import java.util.Queue;
  * @author: wangsw
  * @create: 2020-08-29 21:31
  */
+@Slf4j
 public class Zimo {
+
+    public static synchronized void  demo(int a){
+        System.out.println("aaa"+a);
+        try {
+            Thread.sleep(1000);
+            System.out.println("休眠结束");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     static int[] a1=new int[]{0x00,0x00,0x0E,0x70,0xFF,0xFF,0x0E,0x70,0x2E,0x70,0x70,0xEE,0x0F,0xFF,0x60,0xE0,
             0xF7,0xFE,0x36,0x66,0x1F,0xFE,0x3E,0x66,0x37,0xFE,0x76,0x66,0xE6,0x66,0x66,0x0C};
@@ -86,7 +98,59 @@ public class Zimo {
         return new int[0];
 
     }
+    public static Map<String, String> channelPort = new ConcurrentHashMap<>();
+
+
+
     public static void main(String[] args) {
+        new Thread(()->{
+            Thread.currentThread().setName("sailing");
+            log.debug("开始休眠1");
+            try {
+                Thread.sleep(TimeUnit.SECONDS.toMillis(5));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            log.debug("休眠结束1");
+
+        }).start();
+
+        try {
+            Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        new Thread(()->{
+            Thread.currentThread().setName("sailing");
+            log.debug("开始休眠");
+            try {
+                Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            log.debug("休眠结束");
+
+        }).start();
+
+        try {
+            Thread.sleep(Integer.MAX_VALUE);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+
+        ArrayList<Integer> list1 = new ArrayList<>(list);
+        list1.remove(0);
+        System.out.println(list1);
+        channelPort.put("1","3");
+        channelPort.put("1","4");
+        System.out.println(channelPort);
         int num = 4;
         int[][] requite = new int[][] {{1,0},{2,0},{3,1},{3,2}} ;
         new Zimo().findOrder(num,requite);

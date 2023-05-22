@@ -1,15 +1,11 @@
 package com.sailing.tcp;
 
-import org.apache.commons.lang.ArrayUtils;
+import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @program: demo
@@ -17,6 +13,7 @@ import java.util.concurrent.TimeUnit;
  * @author: wangsw
  * @create: 2021-03-10 15:39
  */
+@Slf4j
 public class ServerAccept extends Thread {
 
     private  int connect;
@@ -32,10 +29,8 @@ public class ServerAccept extends Thread {
     public ServerAccept(Socket socket, int connect){
         try {
             mySock = socket;
-            this.connect = connect;
-            if (connect>=0){
-                mySock.setSoTimeout(connect);
-            }
+            mySock.setKeepAlive(true);
+            //mySock.setSoTimeout(Integer.MAX_VALUE);
             //引入ioHandler为了操作socketTable中的socket关闭后线程仍然存在的问题
             //mySock.setSoTimeout(3*1000*60);
             peerAddress = this.mySock.getInetAddress();
@@ -55,43 +50,44 @@ public class ServerAccept extends Thread {
 
 
     public void run() {
-        short s_4096_2 = 4;
-        while (true) {
-            byte[] bytes = new byte[s_4096_2];
+        StringBuffer sb = new StringBuffer();
+        boolean b = true;
+        while (b) {
+            long l = 0;
+            byte[] bytes = new byte[1024];
             try {
                 BufferedInputStream reader = new BufferedInputStream(myClientInputStream);
                 int read = reader.read(bytes, 0, bytes.length);
                 while (reader.available() > 0) {
                     byte[] bytes2 = new byte[reader.available()];
                     read = reader.read(bytes2, 0, bytes2.length);
-                    System.out.println(new String(bytes2));
+                    bytes = concat(bytes,bytes2);
+                    log.debug(new String(bytes));
                 }
-                if (read == -1) {
-                    //这种定向处理仅仅使用与重庆地区的短连接的大数据包,对应处理下级的向上级的单次的请求
-                    System.out.println("result==1");
-                } else if(new String(bytes).trim().length() <3){
-                    //解决接收到其他的tcp消息进行解析的时候报错
-                    //log.warn("丢弃长度小于3的数据包:{}",new String(bytes).trim());
-                } else {
-                    System.out.println(new String(bytes));
-                }
-            }catch (Exception e){
-                if (!e.getMessage().startsWith("Connection reset")) {
-                    System.out.println("tcp接收数据时候,捕获一个未知异常,msg:"+ e.getMessage());
-                    break;
-                }else {
-                    try {
-                        //服务端或者客户端有问题了现在需要关闭程序
-                        System.out.println("tcp接收数据时候,捕获一个Connection reset,关闭socket连接{}"+mySock);
-                        if (Thread.currentThread().getName().startsWith("c2sThread")){
-                        }
 
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+            }catch (Exception e){
+                try {
+                    long l1 = System.currentTimeMillis();
+                    double v = (l1 - l) / 1000D;
+                    log.error("tcp接收数据时候,捕获一个Connection reset,关闭socket连接"+mySock,e);
+                    myClientOutputStream.flush();
+                    myClientOutputStream.close();
+                    myClientInputStream.close();
+                    mySock.close();
+                } catch (Exception ex) {
+                    log.error("关闭socket出错{}",ex.getMessage());
                 }
                 break;
             }
         }
+    }
+
+    byte[] concat(byte[] a, byte[] b) {
+
+        byte[] c= new byte[a.length+b.length];
+        System.arraycopy(a, 0, c, 0, a.length);
+        System.arraycopy(b, 0, c, a.length, b.length);
+        return c;
+
     }
 }

@@ -15,8 +15,19 @@ import java.util.*;
  */
 public class 数组的度 {
     public static void main(String[] args) {
-        System.out.println(findShortestSubArray(new int[]{1, 2, 2, 3, 1}));
+
+        String a  = null;
+        System.out.println();
+        ever(a);
+        assert a != null;
+        System.out.println("nice");
     }
+
+    private static void ever(String a) {
+
+        return ;
+    }
+
     public static int findShortestSubArray(int[] nums){
         //确定数组的度
         Map<Integer, Integer> map = new HashMap<>();

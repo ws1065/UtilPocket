@@ -13,11 +13,14 @@ import java.io.IOException;
  */
 @Slf4j
 public class ZKWatch {
+    public static boolean checkIpEquals(String host1, String host2){
+        if (host1.equalsIgnoreCase(host2)){
+            return true;
+        }
+        return false;
+    }
+
     public static void main(String[] args) throws IOException, KeeperException, InterruptedException {
-
-
-
-
 
         // Watcher实例
         Watcher wh = new Watcher() {
